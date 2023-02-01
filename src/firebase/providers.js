@@ -5,7 +5,7 @@ import { firebaseAuth } from "./config";
 const googleProvider=new GoogleAuthProvider();
 
 
-export const signInWithGoogle=async()=>{
+export const singInWithGoogle=async()=>{
     try{
         const result = await signInWithPopup(firebaseAuth,googleProvider);
 /*         const credentials = GoogleAuthProvider.credentialFromResult(result);
@@ -22,6 +22,8 @@ export const signInWithGoogle=async()=>{
 
     }catch(error){
         console.log(error)
+
+        const errorMessage=error.errorMessage
 
         return{
 

@@ -1,14 +1,15 @@
 
 import { Button, Grid, Link, TextField, Typography } from "@mui/material"
+import { useState } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { useForm } from "../../hooks"
 import { AuthLayout } from "../layout/AuthLayout"
 
 
 const formData={
-  email:'nico@gmail.com',
-  password:'123456',
-  displayName:'Nicolas Vidal',
+  email:'',
+  password:'',
+  displayName:'',
 }
 
 const formValidations={
@@ -19,19 +20,25 @@ const formValidations={
 
 export const RegisterPage = () => {
 
+  const [formSubmitted, setFormSubmitted] = useState(false)
+
 
   const { displayName,email, onInputChange, password ,formState,isFormValid,emailValid,
-  passWordValid,displayNameValid} = useForm(formData,formValidations);
+  passwordValid,displayNameValid} = useForm(formData,formValidations);
 
   const onSubmit=(event)=>{
     event.preventDefault();
+    setFormSubmitted(true);
     console.log(formState)
+
   }
+  
 
 
 
   return (
     <AuthLayout title='Registro'>
+      <h1>FormValid{isFormValid ? ' Valido':'incorrecto'}</h1>
       <form onSubmit={onSubmit}>
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
@@ -42,7 +49,7 @@ export const RegisterPage = () => {
               name="displayName"
               value={displayName}
               onChange={onInputChange}
-              error={!displayNameValid}
+              error={!!displayNameValid && formSubmitted}
               helperText={displayNameValid}/>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
@@ -53,7 +60,7 @@ export const RegisterPage = () => {
               name="email"
               value={email}
               onChange={onInputChange}
-              error={!emailValid}
+              error={!!emailValid && formSubmitted}
               helperText={emailValid}/>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
@@ -64,8 +71,8 @@ export const RegisterPage = () => {
               name="password"
               value={password}
               onChange={onInputChange}
-              error={!passWordValid}
-              helperText={passWordValid}/>
+              error={!!passwordValid && formSubmitted}
+              helperText={passwordValid}/>
           </Grid>
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
             <Grid item xs={12} sm={6}>

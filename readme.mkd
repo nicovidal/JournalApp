@@ -1,0 +1,7 @@
+---
+sweetalert
+
+npm install sweetalert2
+
+
+---

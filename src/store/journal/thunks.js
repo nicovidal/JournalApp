@@ -1,7 +1,8 @@
-import {collection, doc, setDoc} from 'firebase/firestore/lite'
+import {collection, deleteDoc, doc, setDoc} from 'firebase/firestore/lite'
 import { firebaseDB } from '../../firebase/config';
+import { fileUpload } from '../../helpers';
 import { loadNotes } from '../../helpers/loadNotes';
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote} from './journalSlice';
+import { addNewEmptyNote, deleteNoteById, savingNewNote, setActiveNote, setNotes, setPhotosToActiveNote, setSaving, updateNote} from './journalSlice';
 
 
 
@@ -9,10 +10,7 @@ export const startNewNote=()=>{
 
     return async(dispatch,getState)=>{
 
-
         dispatch(savingNewNote());
-
-        
 
         const {uid}=getState().auth;
 
@@ -66,6 +64,50 @@ export const startSaveNote=()=>{
         await setDoc(docRef,noteToFireStore,{merge:true});
 
         dispatch(updateNote(note));
+
+    }
+}
+
+export const startUploadingFiles=(files=[])=>{
+
+    return async(dispatch)=>{
+        //la pone en estado de carga
+        dispatch(setSaving());
+
+        /* await fileUpload(files[0]); */
+
+        const fileUploadPromises=[];
+        //se crea el arreglo de promesas
+        for(const file of files){
+            fileUploadPromises.push(fileUpload(file));
+        }
+
+        const photosUrls=await Promise.all(fileUploadPromises);
+       /*  console.log(photosUrls) */
+       //la nota activa se grabara
+
+       dispatch(setPhotosToActiveNote(photosUrls));
+
+
+
+    }
+
+}
+
+export const startDeletingNote=()=>{
+    return async(dispatch,getState)=>{
+
+        const {uid}=getState().auth;
+        const {active:note}=getState().journal;
+
+        const docRef=doc(firebaseDB,`${uid}/journal/notas/${note.id}`);
+        await deleteDoc(docRef);
+        /* console.log({resp}) */
+
+        // se limpia de la data local
+        dispatch(deleteNoteById(note.id))
+
+
 
 
 

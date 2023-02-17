@@ -14,8 +14,6 @@ const formData={
   
 }
 
-
-
 export const LoginPage = () => {
 
   const { status,errorMessage } = useSelector(state => state.auth)

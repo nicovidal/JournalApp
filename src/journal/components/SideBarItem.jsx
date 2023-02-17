@@ -36,7 +36,6 @@ export const SideBarItem = ({title,body,id,date,imageUrls=[]}) => {
         <Grid container>
             <ListItemText primary={newTitle} />
             <ListItemText secondary={body} />
-
         </Grid>
     </ListItemButton>
 </ListItem>

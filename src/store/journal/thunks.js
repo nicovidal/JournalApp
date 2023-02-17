@@ -1,7 +1,7 @@
 import {collection, doc, setDoc} from 'firebase/firestore/lite'
 import { firebaseDB } from '../../firebase/config';
 import { loadNotes } from '../../helpers/loadNotes';
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes} from './journalSlice';
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote} from './journalSlice';
 
 
 
@@ -46,4 +46,30 @@ export const startLoadingNote =()=>{
     }
 }
 
+export const startSaveNote=()=>{
+    return async(dispatch,getState)=>{
+
+
+        dispatch(setSaving());
+
+        const {uid}=getState().auth;
+        const {active:note}=getState().journal;
+
+        //se remueve de la nota activa se elimina una propiedad.
+
+        const noteToFireStore={...note};
+        delete noteToFireStore.id;
+
+        /* console.log(noteToFireStore) */
+
+        const docRef=doc(firebaseDB,`${uid}/journal/notas/${note.id}`);
+        await setDoc(docRef,noteToFireStore,{merge:true});
+
+        dispatch(updateNote(note));
+
+
+
+
+    }
+}
 
